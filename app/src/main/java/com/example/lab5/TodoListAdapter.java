@@ -1,32 +1,60 @@
 package com.example.lab5;
 
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.Collections;
+import java.util.List;
+
 public class TodoListAdapter extends RecyclerView.Adapter<TodoListAdapter.Viewholder>  {
+    private List<TodoListItem> todoItems = Collections.emptyList();
+
+    public void setTodoListItems(List<TodoListItem> newTodoItems) {
+        this.todoItems.clear();
+        this.todoItems = newTodoItems;
+        notifyDataSetChanged();
+    }
+
     @NonNull
     @Override
     public Viewholder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return null;
+        View view = LayoutInflater
+                .from(parent.getContext())
+                .inflate(R.layout.todo_list_item, parent, false);
+
+        return new Viewholder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull Viewholder holder, int position) {
-
+        holder.setTodoItem(todoItems.get(position));
     }
 
     @Override
-    public int getItemCount() {
-        return 0;
-    }
+    public int getItemCount() { return todoItems.size(); }
 
-    public  static class Viewholder extends RecyclerView.ViewHolder {
+    @Override
+    public long getItemId(int position) { return todoItems.get(position).id; }
+
+    public class Viewholder extends RecyclerView.ViewHolder {
+        private final TextView textView;
+        private TodoListItem todoItem;
 
         public Viewholder(@NonNull View itemView) {
             super(itemView);
+            this.textView = itemView.findViewById(R.id.todo_item_text);
+        }
+
+        public TodoListItem getTodoItem() { return todoItem;}
+
+        public void setTodoItem(TodoListItem todoItem) {
+            this.todoItem = todoItem;
+            this.textView.setText(todoItem.text);
         }
     }
 }
